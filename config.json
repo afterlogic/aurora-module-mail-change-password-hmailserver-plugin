@@ -1,0 +1,18 @@
+{
+	"Disabled": [
+		false,
+		"bool"
+	],
+	"SupportedServers": [
+		["*"],
+		"array"
+	],
+	"AdminUser": [
+		"Administrator",
+		"string"
+	],
+	"AdminPass": [
+		"",
+		"string"
+	]
+}

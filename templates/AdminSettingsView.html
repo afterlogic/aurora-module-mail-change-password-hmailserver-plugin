@@ -1,0 +1,45 @@
+<div class="panel_top">
+	<h2 class="settings_heading" data-bind="i18n: {'key': '%MODULENAME%/HEADING_SETTINGS_TAB'}"></h2>
+</div>
+<div class="panel_center">
+	<div class="fields">
+		<div class="fieldset">
+			<!--<div class="row">
+				<span class="value">
+					<label class="custom_checkbox" data-bind="css: {'checked': enabled}">
+						<span class="icon"></span>
+						<input type="checkbox" id="enable_%MODULENAME%" data-bind="checked: enabled" />
+					</label>
+					<label for="enable_%MODULENAME%" data-bind="i18n: {'key': 'COREWEBCLIENT/LABEL_ENABLE_MODULE'}"></label>
+				</span>
+			</div>-->
+			<div class="row">
+				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_MAIL_SERVERS'}"></span>
+				<span class="value">
+					<textarea class="input" data-bind="value: supportedServers"></textarea>
+				</span>
+			</div>
+			<div class="row">
+				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_ADMINUSER'}"></span>
+				<span class="value">
+					<input class="input" type="text" data-bind="value: adminuser, valueUpdate: 'afterkeydown', onEnter: save">
+				</span>
+            </div>
+            <div class="row">
+				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_ADMINPASS'}"></span>
+				<span class="value">
+					<input class="input" type="password" data-bind="value: adminpass, valueUpdate: 'afterkeydown', onEnter: save">
+				</span>
+			</div>
+		</div>
+
+		<div class="buttons">
+			<span class="button" data-bind="click: save, visible: !isSaving()">
+				<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE'}"></span>
+			</span>
+			<span class="button" data-bind="visible: isSaving()">
+				<span data-bind="i18n: {'key': 'COREWEBCLIENT/ACTION_SAVE_IN_PROGRESS'}"></span>
+			</span>
+		</div>
+	</div>
+</div>
