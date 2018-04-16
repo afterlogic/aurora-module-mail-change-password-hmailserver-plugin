@@ -9,3 +9,6 @@ The product and hMailServer must run on the same server. PHP COM extension is re
 In admin interface, under "Hmailserver password change" tab, you need to supply list of mailserver hostnames or IP addresses the feature is enabled for, one host per line. If you put "*" character there, it means the feature is enabled for all accounts.
 
 On the same tab, you need to provide login and password for administrative account of hMailServer.
+
+# License
+This module is licensed under AGPLv3 license if free version of the product is used or AfterLogic Software License if commercial version of the product was purchased.
