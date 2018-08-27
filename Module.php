@@ -116,7 +116,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$oDomain = null;
 		$this->initializeServer();
 
-		if (($oAccount instanceof \CMailAccount) && $this->oBaseApp && $this->oAdminAccount)
+		if (($oAccount instanceof \Aurora\Modules\Mail\Classes\Account) && $this->oBaseApp && $this->oAdminAccount)
 		{
 			list($sLogin, $sDomainName) = explode('@', $oAccount->Email);
 
