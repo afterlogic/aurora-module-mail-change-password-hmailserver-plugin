@@ -28,6 +28,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 	 */
 	protected $oAdminAccount;
 
+	protected $oMailModule;
+
 	/**
 	 * @param CApiPluginManager $oPluginManager
 	 */
@@ -36,8 +38,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		$this->oBaseApp = null;
 		$this->oAdminAccount = null;
-		
-		$this->oMailModule = \Aurora\System\Api::GetModule('Mail');
+		$this->oMailModule = null;
 	
 		$this->subscribeEvent('Mail::ChangePassword::before', array($this, 'onBeforeChangePassword'));
 	}
@@ -79,9 +80,9 @@ class Module extends \Aurora\System\Module\AbstractModule
 	{
 		$mResult = true;
 		
-		$oAccount = $this->oMailModule->GetAccount($aArguments['AccountId']);
+		$oAccount = $this->getMailModule()->GetAccount($aArguments['AccountId']);
 
-		if ($oAccount && $this->checkCanChangePassword($oAccount))
+		if ($oAccount && $this->checkCanChangePassword($oAccount) && $oAccount->getPassword() === $aArguments['CurrentPassword'])
 		{
 			$mResult = $this->сhangePassword($oAccount, $aArguments['NewPassword']);
 		}
@@ -99,7 +100,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 		
 		if (!$bFound)
 		{
-			$oServer = $this->oMailModule->GetServer($oAccount->ServerId);
+			$oServer = $this->getMailModule()->GetServer($oAccount->ServerId);
 
 			if ($oServer && in_array($oServer->Name, $this->getConfig('SupportedServers')))
 			{
@@ -203,5 +204,15 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->setConfig('AdminPass', $AdminPass);
 		$this->saveModuleConfig();
 		return true;
+	}
+
+	protected function getMailModule()
+	{
+		if (!$this->oMailModule)
+		{
+			$this->oMailModule = \Aurora\System\Api::GetModule('Mail');
+		}
+
+		return $this->oMailModule;
 	}
 }
