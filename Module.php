@@ -142,7 +142,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 	protected function сhangePassword($oAccount, $sPassword)
 	{
 		$mResult = false;
-		if (0 < strlen($oAccount->IncomingPassword) && $oAccount->IncomingPassword !== $sPassword)
+		if (0 < strlen($oAccount->getPassword()) && $oAccount->getPassword() !== $sPassword)
 		{
 			$this->initializeServer();
 			
