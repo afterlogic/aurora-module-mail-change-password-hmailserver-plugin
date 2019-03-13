@@ -1,37 +1,47 @@
 'use strict';
 
-var Types = require('%PathToCoreWebclientModule%/js/utils/Types.js');
+var
+	_ = require('underscore'),
+	
+	Types = require('%PathToCoreWebclientModule%/js/utils/Types.js')
+;
 
 module.exports = {
 	ServerModuleName: 'MailChangePasswordHmailserverPlugin',
 	HashModuleName: 'mail-hmailserver-plugin',
 	
-	Disabled: false,
 	SupportedServers: '',
 	AdminUser: '',
-	AdminPass: '',
+	HasAdminPass: false,
 	
 	/**
 	 * Initializes settings of the module.
 	 * 
-	 * @param {Object} oAppDataSection module section in AppData.
+	 * @param {Object} oAppData Object contained modules settings.
 	 */
-	init: function (oAppDataSection)
+	init: function (oAppData)
 	{
-		if (oAppDataSection)
+		var oAppDataSection = oAppData['%ModuleName%'];
+		
+		if (!_.isEmpty(oAppDataSection))
 		{
-			this.Disabled = !!oAppDataSection.Disabled;
 			this.SupportedServers = Types.pString(oAppDataSection.SupportedServers);
 			this.AdminUser = Types.pString(oAppDataSection.AdminUser);
-			this.AdminPass = Types.pString(oAppDataSection.AdminPass);
+			this.HasAdminPass = Types.pBool(oAppDataSection.HasAdminPass);
 		}
 	},
 	
-	updateAdmin: function (bDisabled, aSupportedServers, sAdminUser, sAdminPass)
+	/**
+	 * Updates new settings values after saving on server.
+	 * 
+	 * @param {string} sSupportedServers
+	 * @param {string} sAdminUser
+	 * @param {string} sAdminPass
+	 */
+	updateAdmin: function (sSupportedServers, sAdminUser, sAdminPass)
 	{
-		this.Disabled = !!bDisabled;
-		this.SupportedServers = Types.pString(aSupportedServers);
+		this.SupportedServers = Types.pString(sSupportedServers);
 		this.AdminUser = Types.pString(sAdminUser);
-		this.AdminPass = Types.pString(sAdminPass);
+		this.HasAdminPass = sAdminPass !== '';
 	}
 };

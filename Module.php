@@ -40,7 +40,8 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->oAdminAccount = null;
 		$this->oMailModule = null;
 	
-		$this->subscribeEvent('Mail::ChangePassword::before', array($this, 'onBeforeChangePassword'));
+		$this->subscribeEvent('Mail::Account::ToResponseArray', array($this, 'onMailAccountToResponseArray'));
+		$this->subscribeEvent('Mail::ChangeAccountPassword', array($this, 'onChangeAccountPassword'));
 	}
 	
 	protected function initializeServer()
@@ -72,26 +73,50 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}	
 	
 	/**
-	 * 
+	 * Adds to account response array information about if allowed to change the password for this account.
 	 * @param array $aArguments
 	 * @param mixed $mResult
 	 */
-	public function onBeforeChangePassword($aArguments, &$mResult)
+	public function onMailAccountToResponseArray($aArguments, &$mResult)
 	{
-		$mResult = true;
-		
-		$oAccount = $this->getMailModule()->GetAccount($aArguments['AccountId']);
+		$oAccount = $aArguments['Account'];
 
-		if ($oAccount && $this->checkCanChangePassword($oAccount) && $oAccount->getPassword() === $aArguments['CurrentPassword'])
+		if ($oAccount && $this->checkCanChangePassword($oAccount))
 		{
-			$mResult = $this->сhangePassword($oAccount, $aArguments['NewPassword']);
+			if (!isset($mResult['Extend']) || !is_array($mResult['Extend']))
+			{
+				$mResult['Extend'] = [];
+			}
+			$mResult['Extend']['AllowChangePasswordOnMailServer'] = true;
 		}
-	
-		//return $mResult;
 	}
 
 	/**
-	 * @param CAccount $oAccount
+	 * Tries to change password for account if allowed.
+	 * @param array $aArguments
+	 * @param mixed $mResult
+	 */
+	public function onChangeAccountPassword($aArguments, &$mResult)
+	{
+		$bPasswordChanged = false;
+		
+		$oAccount = $aArguments['Account'];
+		if ($oAccount && $this->checkCanChangePassword($oAccount) && $oAccount->getPassword() === $aArguments['CurrentPassword'])
+		{
+			$bPasswordChanged = $this->changePassword($oAccount, $aArguments['NewPassword']);
+		}
+		
+		if (is_array($mResult))
+		{
+			$mResult['AccountPasswordChanged'] = $mResult['AccountPasswordChanged'] || $bPasswordChanged;
+		}
+		
+		return $bPasswordChanged; // break subscriptions if password was changed
+	}
+	
+	/**
+	 * Checks if allowed to change password for account.
+	 * @param \Aurora\Modules\Mail\Classes\Account $oAccount
 	 * @return bool
 	 */
 	protected function checkCanChangePassword($oAccount)
@@ -137,15 +162,18 @@ class Module extends \Aurora\System\Module\AbstractModule
 	}
 	
 	/**
-	 * @param CAccount $oAccount
+	 * Tries to change password for account.
+	 * @param \Aurora\Modules\Mail\Classes\Account $oAccount
+	 * @param string $sPassword
+	 * @return boolean
+	 * @throws \Aurora\System\Exceptions\ApiException
 	 */
-	protected function сhangePassword($oAccount, $sPassword)
+	protected function changePassword($oAccount, $sPassword)
 	{
 		$mResult = false;
 		if (0 < strlen($oAccount->getPassword()) && $oAccount->getPassword() !== $sPassword)
 		{
 			$this->initializeServer();
-			
 			if ($this->oBaseApp && $this->oAdminAccount)
 			{
 				try
@@ -178,32 +206,42 @@ class Module extends \Aurora\System\Module\AbstractModule
 		return $mResult;
 	}
 	
+	/**
+	 * Obtains list of module settings for super admin.
+	 * @return array
+	 */
 	public function GetSettings()
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::Anonymous);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::SuperAdmin);
 		
 		$sSupportedServers = implode("\n", $this->getConfig('SupportedServers', array()));
 		
 		$aAppData = array(
 			'SupportedServers' => $sSupportedServers,
 			'AdminUser' => $this->getConfig('AdminUser', ''),
-			'AdminPass' => $this->getConfig('AdminPass', ''),
+			'HasAdminPass' => $this->getConfig('AdminPass', '') !== '',
 		);
 
 		return $aAppData;
 	}
 	
+	/**
+	 * Updates module's super admin settings.
+	 * @param string $SupportedServers
+	 * @param string $AdminUser
+	 * @param int $AdminPass
+	 * @return boolean
+	 */
 	public function UpdateSettings($SupportedServers, $AdminUser, $AdminPass)
 	{
-		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::TenantAdmin);
+		\Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::SuperAdmin);
 		
 		$aSupportedServers = preg_split('/\r\n|[\r\n]/', $SupportedServers);
 		
 		$this->setConfig('SupportedServers', $aSupportedServers);
 		$this->setConfig('AdminUser', $AdminUser);
 		$this->setConfig('AdminPass', $AdminPass);
-		$this->saveModuleConfig();
-		return true;
+		return $this->saveModuleConfig();
 	}
 
 	protected function getMailModule()

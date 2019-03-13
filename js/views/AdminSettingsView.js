@@ -19,11 +19,14 @@ function CHmailserverAdminSettingsView()
 {
 	CAbstractSettingsFormView.call(this, '%ModuleName%');
 
+	this.sFakePass = '      ';
+	
 	/* Editable fields */
-//	this.enabled = ko.observable(!Settings.Disabled);
 	this.supportedServers = ko.observable(Settings.SupportedServers);
-	this.adminpass = ko.observable(Settings.AdminUser);
-	this.adminuser = ko.observable(Settings.AdminPass);
+	this.adminuser = ko.observable(Settings.AdminUser);
+	console.log('Settings.HasAdminUser', Settings.HasAdminPass);
+	this.adminpass = ko.observable(Settings.HasAdminPass ? this.sFakePass : '');
+	console.log('this.adminpass', this.adminpass());
 	/*-- Editable fields */
 }
 
@@ -34,7 +37,6 @@ CHmailserverAdminSettingsView.prototype.ViewTemplate = '%ModuleName%_AdminSettin
 CHmailserverAdminSettingsView.prototype.getCurrentValues = function ()
 {
 	return [
-//		!this.enabled(),
 		Types.pString(this.supportedServers()),
 		Types.pString(this.adminuser()),
 		Types.pString(this.adminpass())
@@ -43,19 +45,17 @@ CHmailserverAdminSettingsView.prototype.getCurrentValues = function ()
 
 CHmailserverAdminSettingsView.prototype.revertGlobalValues = function ()
 {
-//	this.enabled(!Settings.Disabled);
 	this.supportedServers(Settings.SupportedServers);
 	this.adminuser(Settings.AdminUser);
-	this.adminpass(Settings.AdminPass);
+	this.adminpass(Settings.HasAdminPass ? this.sFakePass : '');
 };
 
 CHmailserverAdminSettingsView.prototype.getParametersForSave = function ()
 {
 	return {
-//		'Disabled': !this.enabled(),
 		'SupportedServers': Types.pString(this.supportedServers()),
 		'AdminUser': Types.pString(this.adminuser()),
-		'AdminPass': Types.pString(this.adminpass())
+		'AdminPass': this.adminpass() === this.sFakePass ? '' : Types.pString(this.adminpass())
 	};
 };
 
@@ -64,7 +64,6 @@ CHmailserverAdminSettingsView.prototype.getParametersForSave = function ()
  */
 CHmailserverAdminSettingsView.prototype.applySavedValues = function (oParameters)
 {
-//	Settings.updateAdmin(oParameters.Disabled, oParameters.SupportedServers, oParameters.Host, oParameters.Port);
 	Settings.updateAdmin(oParameters.SupportedServers, oParameters.AdminUser, oParameters.AdminPass);
 };
 

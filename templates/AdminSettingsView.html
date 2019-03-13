@@ -4,20 +4,15 @@
 <div class="panel_center">
 	<div class="fields">
 		<div class="fieldset">
-			<!--<div class="row">
-				<span class="value">
-					<label class="custom_checkbox" data-bind="css: {'checked': enabled}">
-						<span class="icon"></span>
-						<input type="checkbox" id="enable_%MODULENAME%" data-bind="checked: enabled" />
-					</label>
-					<label for="enable_%MODULENAME%" data-bind="i18n: {'key': 'COREWEBCLIENT/LABEL_ENABLE_MODULE'}"></label>
-				</span>
-			</div>-->
-			<div class="row">
+			<div class="row" style="margin-bottom: 4px;">
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_MAIL_SERVERS'}"></span>
 				<span class="value">
 					<textarea class="input" data-bind="value: supportedServers"></textarea>
 				</span>
+			</div>
+			<div class="row hint">
+				<span class="label"></span>
+				<span class="value" data-bind="i18n: {'key': '%MODULENAME%/LABEL_HINT_MAIL_SERVERS'}"></span>
 			</div>
 			<div class="row">
 				<span class="label" data-bind="i18n: {'key': '%MODULENAME%/LABEL_ADMINUSER'}"></span>
