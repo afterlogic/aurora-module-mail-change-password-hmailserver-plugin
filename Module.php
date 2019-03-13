@@ -125,9 +125,9 @@ class Module extends \Aurora\System\Module\AbstractModule
 		
 		if (!$bFound)
 		{
-			$oServer = $this->getMailModule()->GetServer($oAccount->ServerId);
+			$oServer = $oAccount->getServer();
 
-			if ($oServer && in_array($oServer->Name, $this->getConfig('SupportedServers')))
+			if ($oServer && in_array($oServer->IncomingServer, $this->getConfig('SupportedServers')))
 			{
 				$bFound = true;
 			}
@@ -242,15 +242,5 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$this->setConfig('AdminUser', $AdminUser);
 		$this->setConfig('AdminPass', $AdminPass);
 		return $this->saveModuleConfig();
-	}
-
-	protected function getMailModule()
-	{
-		if (!$this->oMailModule)
-		{
-			$this->oMailModule = \Aurora\System\Api::GetModule('Mail');
-		}
-
-		return $this->oMailModule;
 	}
 }
