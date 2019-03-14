@@ -99,11 +99,13 @@ class Module extends \Aurora\System\Module\AbstractModule
 	public function onChangeAccountPassword($aArguments, &$mResult)
 	{
 		$bPasswordChanged = false;
+		$bBreakSubscriptions = false;
 		
 		$oAccount = $aArguments['Account'];
 		if ($oAccount && $this->checkCanChangePassword($oAccount) && $oAccount->getPassword() === $aArguments['CurrentPassword'])
 		{
 			$bPasswordChanged = $this->changePassword($oAccount, $aArguments['NewPassword']);
+			$bBreakSubscriptions = true; // break if Hmailserver plugin tries to change password in this account. 
 		}
 		
 		if (is_array($mResult))
@@ -111,7 +113,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 			$mResult['AccountPasswordChanged'] = $mResult['AccountPasswordChanged'] || $bPasswordChanged;
 		}
 		
-		return $bPasswordChanged; // break subscriptions if password was changed
+		return $bBreakSubscriptions;
 	}
 	
 	/**
