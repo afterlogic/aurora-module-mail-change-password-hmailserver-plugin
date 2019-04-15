@@ -24,9 +24,7 @@ function CHmailserverAdminSettingsView()
 	/* Editable fields */
 	this.supportedServers = ko.observable(Settings.SupportedServers);
 	this.adminuser = ko.observable(Settings.AdminUser);
-	console.log('Settings.HasAdminUser', Settings.HasAdminPass);
 	this.adminpass = ko.observable(Settings.HasAdminPass ? this.sFakePass : '');
-	console.log('this.adminpass', this.adminpass());
 	/*-- Editable fields */
 }
 
