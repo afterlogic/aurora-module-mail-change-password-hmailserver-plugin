@@ -8,8 +8,8 @@
 namespace Aurora\Modules\MailChangePasswordHmailserverPlugin;
 
 /**
- * This module adds ability to login to the admin panel as a Super Administrator.
- *
+ * Allows users to change passwords on their email accounts hosted by [hMailServer](https://www.hmailserver.com/).
+ * 
  * @license https://www.gnu.org/licenses/agpl-3.0.html AGPL-3.0
  * @license https://afterlogic.com/products/common-licensing Afterlogic Software License
  * @copyright Copyright (c) 2019, Afterlogic Corp.
