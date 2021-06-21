@@ -3,12 +3,12 @@ import typesUtils from 'src/utils/types'
 
 class HmailServerPluginSettings {
   constructor (appData) {
-    const mailChangePasswordHmailserverPlugin = appData.MailChangePasswordHmailserverPlugin;
+    const mailChangePasswordHmailserverPlugin = appData.MailChangePasswordHmailserverPlugin
 
     if (!_.isEmpty(mailChangePasswordHmailserverPlugin)) {
-      this.supportedServers = typesUtils.pString(mailChangePasswordHmailserverPlugin.SupportedServers);
-      this.adminUser = typesUtils.pString(mailChangePasswordHmailserverPlugin.AdminUser);
-      this.hasAdminPass = typesUtils.pBool(mailChangePasswordHmailserverPlugin.HasAdminPass);
+      this.supportedServers = typesUtils.pString(mailChangePasswordHmailserverPlugin.SupportedServers)
+      this.adminUser = typesUtils.pString(mailChangePasswordHmailserverPlugin.AdminUser)
+      this.hasAdminPass = typesUtils.pBool(mailChangePasswordHmailserverPlugin.HasAdminPass)
     }
   }
 
