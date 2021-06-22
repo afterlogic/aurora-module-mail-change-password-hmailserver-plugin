@@ -52,6 +52,8 @@ import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
 import _ from 'lodash'
 
+const FAKE_PASS = '     '
+
 export default {
   name: 'HmailserverAdminSettings',
   components: {
@@ -62,8 +64,8 @@ export default {
       adminUser: '',
       hasAdminPass: false,
       supportedServers: '',
-      fakePass: '     ',
-      password: '',
+      savedPass: FAKE_PASS,
+      password: FAKE_PASS,
       saving: false
     }
   },
@@ -83,7 +85,7 @@ export default {
       return this.supportedServers !== data.supportedServers ||
           this.adminUser !== data.adminUser ||
           this.port !== data.port ||
-          this.password !== this.fakePass
+          this.password !== this.savedPass
     },
     save () {
       if (!this.saving) {
@@ -92,7 +94,7 @@ export default {
           SupportedServers: this.supportedServers,
           AdminUser: this.adminUser,
         }
-        if (this.password !== this.fakePass) {
+        if (this.password !== FAKE_PASS) {
           parameters.AdminPass = this.password
         }
         webApi.sendRequest({
@@ -107,7 +109,7 @@ export default {
               adminUser: this.adminUser,
               hasAdminPass: this.password !== ''
             })
-            this.fakePass = this.password
+            this.savedPass = this.password
             notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
           } else {
             notification.showError(this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED'))
@@ -123,8 +125,8 @@ export default {
       this.adminUser = data.adminUser
       this.hasAdminPass = data.hasAdminPass
       this.supportedServers = data.supportedServers
-      this.fakePass = data.hasAdminPass ? '     ' : ''
-      this.password = data.hasAdminPass ? this.fakePass : ''
+      this.savedPass = data.hasAdminPass ? FAKE_PASS : ''
+      this.password = data.hasAdminPass ? FAKE_PASS : ''
     }
   }
 }
