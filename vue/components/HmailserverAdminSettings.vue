@@ -6,15 +6,15 @@
       </div>
       <q-card flat bordered class="card-edit-settings">
         <q-card-section>
-          <div class="row q-mb-xs">
+          <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_MAIL_SERVERS'"></div>
-            <div class="col-5 q-ml-xl">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" type="textarea" v-model="supportedServers" @keyup.enter="save"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" />
-            <div class="col-8 q-ml-xl">
+            <div class="col-8">
               <q-item-label caption>
                 {{ $t('MAILCHANGEPASSWORDPOPPASSDPLUGIN.LABEL_HINT_MAIL_SERVERS') }}
               </q-item-label>
@@ -22,19 +22,19 @@
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_ADMINUSER'"></div>
-            <div class="col-5 q-ml-xl">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" v-model="adminUser" @keyup.enter="save"/>
             </div>
           </div>
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_ADMINPASS'"></div>
-            <div class="col-5 q-ml-xl">
+            <div class="col-5">
               <q-input outlined dense class="bg-white" type="password"  v-model="password" @keyup.enter="save"/>
             </div>
           </div>
         </q-card-section>
       </q-card>
-      <div class="q-pa-md text-right">
+      <div class="q-pt-md text-right">
         <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="save"
                :label="saving ? $t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS') : $t('COREWEBCLIENT.ACTION_SAVE')">
         </q-btn>
