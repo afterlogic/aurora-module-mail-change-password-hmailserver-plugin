@@ -14,7 +14,7 @@ export default {
         tabName: 'mail-hmailserver-plugin',
         title: 'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_HMAIL_SETTINGS_TAB',
         component () {
-          return import('src/../../../MailChangePasswordHmailserverPlugin/vue/components/HmailserverAdminSettings')
+          return import('./components/HmailserverAdminSettings')
         },
       },
     ]
