@@ -40,25 +40,21 @@
         </q-btn>
       </div>
     </div>
-    <UnsavedChangesDialog ref="unsavedChangesDialog"/>
   </q-scroll-area>
 </template>
 
 <script>
-import UnsavedChangesDialog from 'src/components/UnsavedChangesDialog'
-import webApi from 'src/utils/web-api'
-import settings from '../../../MailChangePasswordHmailserverPlugin/vue/settings'
-import notification from 'src/utils/notification'
 import errors from 'src/utils/errors'
-import _ from 'lodash'
+import notification from 'src/utils/notification'
+import webApi from 'src/utils/web-api'
+
+import settings from '../settings'
 
 const FAKE_PASS = '     '
 
 export default {
   name: 'HmailserverAdminSettings',
-  components: {
-    UnsavedChangesDialog
-  },
+
   data () {
     return {
       adminUser: '',
@@ -69,17 +65,19 @@ export default {
       saving: false
     }
   },
+
   mounted () {
     this.populate()
   },
+
   beforeRouteLeave(to, from, next) {
-    if (this.hasChanges() && _.isFunction(this?.$refs?.unsavedChangesDialog?.openConfirmDiscardChangesDialog)) {
-      this.$refs.unsavedChangesDialog.openConfirmDiscardChangesDialog(next)
-    } else {
-      next()
-    }
+    this.doBeforeRouteLeave(to, from, next)
   },
+
   methods: {
+    /**
+     * Method is used in doBeforeRouteLeave mixin
+     */
     hasChanges() {
       const data = settings.getHmailServerPluginSettings()
       return this.supportedServers !== data.supportedServers ||
@@ -87,6 +85,16 @@ export default {
           this.port !== data.port ||
           this.password !== this.savedPass
     },
+
+    /**
+     * Method is used in doBeforeRouteLeave mixin,
+     * do not use async methods - just simple and plain reverting of values
+     * !! hasChanges method must return true after executing revertChanges method
+     */
+    revertChanges () {
+      this.populate()
+    },
+
     save () {
       if (!this.saving) {
         this.saving = true
