@@ -37,10 +37,13 @@
       </q-card>
       <div class="q-pt-md text-right">
         <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="save"
-               :label="saving ? $t('COREWEBCLIENT.ACTION_SAVE_IN_PROGRESS') : $t('COREWEBCLIENT.ACTION_SAVE')">
+               :label="$t('COREWEBCLIENT.ACTION_SAVE')">
         </q-btn>
       </div>
     </div>
+    <q-inner-loading style="justify-content: flex-start;" :showing="saving">
+      <q-linear-progress query />
+    </q-inner-loading>
   </q-scroll-area>
 </template>
 
