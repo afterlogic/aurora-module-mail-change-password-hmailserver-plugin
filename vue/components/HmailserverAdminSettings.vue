@@ -26,7 +26,7 @@
               <q-input outlined dense bg-color="white" v-model="adminUser" @keyup.enter="save"/>
             </div>
           </div>
-          <div class="row q-mb-md">
+          <div class="row">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_ADMINPASS'"></div>
             <div class="col-5">
               <q-input outlined dense bg-color="white" type="password" autocomplete="new-password"
