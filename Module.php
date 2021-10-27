@@ -101,8 +101,10 @@ class Module extends \Aurora\System\Module\AbstractModule
 		$bPasswordChanged = false;
 		$bBreakSubscriptions = false;
 		
+		$oUser = \Aurora\System\Api::getAuthenticatedUser();
 		$oAccount = $aArguments['Account'];
-		if ($oAccount && $this->checkCanChangePassword($oAccount) && $oAccount->getPassword() === $aArguments['CurrentPassword'])
+		if ($oAccount && $this->checkCanChangePassword($oAccount) && 
+			($oUser->Role === \Aurora\System\Enums\UserRole::SuperAdmin || $oAccount->getPassword() === $aArguments['CurrentPassword']))
 		{
 			$bPasswordChanged = $this->changePassword($oAccount, $aArguments['NewPassword']);
 			$bBreakSubscriptions = true; // break if Hmailserver plugin tries to change password in this account. 
