@@ -10,5 +10,7 @@ In admin interface, under "Hmailserver password change" tab, you need to supply 
 
 On the same tab, you need to provide login and password for administrative account of hMailServer.
 
+To activate "Change password" button in the interface, set "Disabled" to **false** in `data/settings/modules/ChangePasswordWebclient.config.json` configuration file. 
+
 # License
 This module is licensed under AGPLv3 license if free version of the product is used or Afterlogic Software License if commercial version of the product was purchased.
