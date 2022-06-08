@@ -1,36 +1,36 @@
 {
-  "Disabled": [
-    false,
-    "bool"
-  ],
-  "Disabled_Description": [
-    "",
-    "string"
-  ],
-  "SupportedServers": [
-    [
-      "*"
-    ],
-    "array"
-  ],
-  "SupportedServers_Description": [
-    "",
-    "string"
-  ],
-  "AdminUser": [
-    "Administrator",
-    "string"
-  ],
-  "AdminUser_Description": [
-    "",
-    "string"
-  ],
-  "AdminPass": [
-    "",
-    "string"
-  ],
-  "AdminPass_Description": [
-    "",
-    "string"
-  ]
+	"Disabled": [
+		false,
+		"bool"
+	],
+	"Disabled_Description": [
+		"",
+		"string"
+	],
+	"SupportedServers": [
+		[
+			"*"
+		],
+		"array"
+	],
+	"SupportedServers_Description": [
+		"",
+		"string"
+	],
+	"AdminUser": [
+		"Administrator",
+		"string"
+	],
+	"AdminUser_Description": [
+		"",
+		"string"
+	],
+	"AdminPass": [
+		"",
+		"string"
+	],
+	"AdminPass_Description": [
+		"",
+		"string"
+	]
 }
