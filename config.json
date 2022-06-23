@@ -4,7 +4,7 @@
 		"bool"
 	],
 	"Disabled_Description": [
-		"",
+		"Setting to true disables the module",
 		"string"
 	],
 	"SupportedServers": [
@@ -14,7 +14,7 @@
 		"array"
 	],
 	"SupportedServers_Description": [
-		"",
+		"Defines a list of servers the password change is enabled for, or * for all the servers",
 		"string"
 	],
 	"AdminUser": [
@@ -22,7 +22,7 @@
 		"string"
 	],
 	"AdminUser_Description": [
-		"",
+		"Defines hMailServer administrator username",
 		"string"
 	],
 	"AdminPass": [
@@ -30,7 +30,7 @@
 		"string"
 	],
 	"AdminPass_Description": [
-		"",
+		"Defines hMailServer administrator password",
 		"string"
 	]
 }
