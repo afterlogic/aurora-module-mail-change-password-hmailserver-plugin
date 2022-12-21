@@ -14,7 +14,7 @@
 		"array"
 	],
 	"SupportedServers_Description": [
-		"Defines a list of servers the password change is enabled for, or * for all the servers",
+		"If IMAP Server value of the mailserver is in this list, password change is enabled for it. * enables it for all the servers.",
 		"string"
 	],
 	"AdminUser": [
