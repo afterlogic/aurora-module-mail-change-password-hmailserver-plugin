@@ -59,7 +59,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 						$this->getConfig('AdminPass', '')
 					);
 				}
-				catch(Exception $oException)
+				catch(\Exception $oException)
 				{
 					\Aurora\System\Api::Log('Initialize Server Error');
 					\Aurora\System\Api::LogObject($oException);
@@ -153,7 +153,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 				$oDomain = $this->oBaseApp->Domains->ItemByName($sDomainName);
 			}
 
-			catch(Exception $oException) 
+			catch(\Exception $oException) 
 			{
 				\Aurora\System\Api::Log('Getting domain error');
 				\Aurora\System\Api::LogObject($oException);
@@ -195,7 +195,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 						}
 					}
 				}
-				catch (Exception $oException)
+				catch (\Exception $oException)
 				{
 					throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Exceptions\Errs::UserManager_AccountNewPasswordUpdateError);
 				}
