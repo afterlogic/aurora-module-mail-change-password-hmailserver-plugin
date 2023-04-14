@@ -40,6 +40,15 @@ class Module extends \Aurora\System\Module\AbstractModule
         $this->subscribeEvent('Mail::ChangeAccountPassword', array($this, 'onChangeAccountPassword'));
     }
 
+    /**
+     *
+     * @return Module
+     */
+    public static function Decorator()
+    {
+        return parent::Decorator();
+    }
+
     protected function initializeServer()
     {
         if (null === $this->oBaseApp) {
