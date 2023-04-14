@@ -19,20 +19,16 @@ namespace Aurora\Modules\MailChangePasswordHmailserverPlugin;
 class Module extends \Aurora\System\Module\AbstractModule
 {
     /**
-     * @var
+     * @var \stdClass
      */
     protected $oBaseApp;
 
     /**
-     * @var
+     * @var \stdClass
      */
     protected $oAdminAccount;
 
     protected $oMailModule;
-
-    /**
-     * @param CApiPluginManager $oPluginManager
-     */
 
     public function init()
     {
@@ -50,7 +46,9 @@ class Module extends \Aurora\System\Module\AbstractModule
             if (class_exists('COM')) {
                 $this->oBaseApp = new \COM("hMailServer.Application");
                 try {
+                    /* @phpstan-ignore-next-line */
                     $this->oBaseApp->Connect();
+                    /* @phpstan-ignore-next-line */
                     $this->oAdminAccount = $this->oBaseApp->Authenticate(
                         $this->getConfig('AdminUser', 'Administrator'),
                         $this->getConfig('AdminPass', '')
@@ -107,7 +105,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 
     /**
      * Checks if allowed to change password for account.
-     * @param \Aurora\Modules\Mail\Classes\Account $oAccount
+     * @param \Aurora\Modules\Mail\Models\MailAccount $oAccount
      * @return bool
      */
     protected function checkCanChangePassword($oAccount)
@@ -147,7 +145,7 @@ class Module extends \Aurora\System\Module\AbstractModule
 
     /**
      * Tries to change password for account.
-     * @param \Aurora\Modules\Mail\Classes\Account $oAccount
+     * @param \Aurora\Modules\Mail\Models\MailAccount $oAccount
      * @param string $sPassword
      * @return boolean
      * @throws \Aurora\System\Exceptions\ApiException
