@@ -14,6 +14,8 @@ namespace Aurora\Modules\MailChangePasswordHmailserverPlugin;
  * @license https://afterlogic.com/products/common-licensing Afterlogic Software License
  * @copyright Copyright (c) 2023, Afterlogic Corp.
  *
+ * @property Settings $oModuleSettings
+ *
  * @package Modules
  */
 class Module extends \Aurora\System\Module\AbstractModule
@@ -68,8 +70,8 @@ class Module extends \Aurora\System\Module\AbstractModule
                     $this->oBaseApp->Connect();
                     /* @phpstan-ignore-next-line */
                     $this->oAdminAccount = $this->oBaseApp->Authenticate(
-                        $this->getConfig('AdminUser', 'Administrator'),
-                        $this->getConfig('AdminPass', '')
+                        $this->oModuleSettings->AdminUser,
+                        $this->oModuleSettings->AdminPass
                     );
                 } catch(\Exception $oException) {
                     \Aurora\System\Api::Log('Initialize Server Error');
@@ -128,12 +130,12 @@ class Module extends \Aurora\System\Module\AbstractModule
      */
     protected function checkCanChangePassword($oAccount)
     {
-        $bFound = in_array("*", $this->getConfig('SupportedServers', array()));
+        $bFound = in_array("*", $this->oModuleSettings->SupportedServers);
 
         if (!$bFound) {
             $oServer = $oAccount->getServer();
 
-            if ($oServer && in_array($oServer->IncomingServer, $this->getConfig('SupportedServers'))) {
+            if ($oServer && in_array($oServer->IncomingServer, $this->oModuleSettings->SupportedServers)) {
                 $bFound = true;
             }
         }
@@ -205,12 +207,12 @@ class Module extends \Aurora\System\Module\AbstractModule
     {
         \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::SuperAdmin);
 
-        $sSupportedServers = implode("\n", $this->getConfig('SupportedServers', array()));
+        $sSupportedServers = implode("\n", $this->oModuleSettings->SupportedServers);
 
         $aAppData = array(
             'SupportedServers' => $sSupportedServers,
-            'AdminUser' => $this->getConfig('AdminUser', ''),
-            'HasAdminPass' => $this->getConfig('AdminPass', '') !== '',
+            'AdminUser' => $this->oModuleSettings->AdminUser,
+            'HasAdminPass' => $this->oModuleSettings->AdminPass !== '',
         );
 
         return $aAppData;
