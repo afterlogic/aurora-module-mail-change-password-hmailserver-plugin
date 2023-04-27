@@ -34,7 +34,6 @@ class Module extends \Aurora\System\Module\AbstractModule
 
     public function init()
     {
-        $this->oBaseApp = null;
         $this->oAdminAccount = null;
         $this->oMailModule = null;
 
@@ -66,16 +65,21 @@ class Module extends \Aurora\System\Module\AbstractModule
         return $this->oModuleSettings;
     }
 
+    /**
+     * @return HMailServer
+     */
     protected function initializeServer()
     {
-        if (null === $this->oBaseApp) {
+        /** @var HMailServer $oBaseApp */
+        static $oBaseApp = null;
+
+        if (null === $oBaseApp) {
             if (class_exists('COM')) {
-                $this->oBaseApp = new \COM("hMailServer.Application");
+                $oBaseApp = new \COM("hMailServer.Application");
+                /** @var HMailServer $oBaseApp */
                 try {
-                    /* @phpstan-ignore-next-line */
-                    $this->oBaseApp->Connect();
-                    /* @phpstan-ignore-next-line */
-                    $this->oAdminAccount = $this->oBaseApp->Authenticate(
+                    $oBaseApp->Connect();
+                    $this->oAdminAccount = $oBaseApp->Authenticate(
                         $this->oModuleSettings->AdminUser,
                         $this->oModuleSettings->AdminPass
                     );
@@ -87,6 +91,8 @@ class Module extends \Aurora\System\Module\AbstractModule
                 \Aurora\System\Api::Log('Unable to load class: COM');
             }
         }
+
+        return $oBaseApp;
     }
 
     /**
@@ -153,13 +159,13 @@ class Module extends \Aurora\System\Module\AbstractModule
     protected function getServerDomain($oAccount)
     {
         $oDomain = null;
-        $this->initializeServer();
+        $oBaseApp = $this->initializeServer();
 
-        if (($oAccount instanceof \Aurora\Modules\Mail\Models\MailAccount) && $this->oBaseApp && $this->oAdminAccount) {
+        if (($oAccount instanceof \Aurora\Modules\Mail\Models\MailAccount) && $oBaseApp && $this->oAdminAccount) {
             list($sLogin, $sDomainName) = explode('@', $oAccount->Email);
 
             try {
-                $oDomain = $this->oBaseApp->Domains->ItemByName($sDomainName);
+                $oDomain = $oBaseApp->Domains->ItemByName($sDomainName);
             } catch(\Exception $oException) {
                 \Aurora\System\Api::Log('Getting domain error');
                 \Aurora\System\Api::LogObject($oException);
@@ -180,8 +186,8 @@ class Module extends \Aurora\System\Module\AbstractModule
     {
         $mResult = false;
         if (0 < strlen($oAccount->getPassword()) && $oAccount->getPassword() !== $sPassword) {
-            $this->initializeServer();
-            if ($this->oBaseApp && $this->oAdminAccount) {
+            $oBaseApp = $this->initializeServer();
+            if ($oBaseApp && $this->oAdminAccount) {
                 try {
                     $oDomain = $this->getServerDomain($oAccount);
 
@@ -241,5 +247,34 @@ class Module extends \Aurora\System\Module\AbstractModule
         $this->setConfig('AdminUser', $AdminUser);
         $this->setConfig('AdminPass', $AdminPass);
         return $this->saveModuleConfig();
+    }
+}
+
+class HMailServer {
+    /** @var HMailServerDomains */
+    public $Domains;
+    
+    public function Connect() {
+    }
+
+    /**
+     * @param string $user
+     * @param string $pass
+     * 
+     * @return mixed
+     */
+    public function Authenticate($user, $pass) {
+        return null;
+    }
+}
+
+class HMailServerDomains {
+    /**
+     * @param string $name
+     * 
+     * @return mixed
+     */
+    public function ItemByName($name) {
+        return null;
     }
 }
