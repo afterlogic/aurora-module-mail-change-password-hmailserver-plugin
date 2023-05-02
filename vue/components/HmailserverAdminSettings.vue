@@ -1,6 +1,6 @@
 <template>
   <q-scroll-area class="full-height full-width">
-    <div class="q-pa-lg ">
+    <div class="q-pa-lg">
       <div class="row q-mb-md">
         <div class="col text-h5" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.HEADING_SETTINGS_TAB'"></div>
       </div>
@@ -9,7 +9,14 @@
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_MAIL_SERVERS'"></div>
             <div class="col-5">
-              <q-input outlined dense bg-color="white" type="textarea input" v-model="supportedServers" @keyup.enter="save"/>
+              <q-input
+                outlined
+                dense
+                bg-color="white"
+                type="textarea input"
+                v-model="supportedServers"
+                @keyup.enter="save"
+              />
             </div>
           </div>
           <div class="row q-mb-md">
@@ -23,25 +30,40 @@
           <div class="row q-mb-md">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_ADMINUSER'"></div>
             <div class="col-5">
-              <q-input outlined dense bg-color="white" v-model="adminUser" @keyup.enter="save"/>
+              <q-input outlined dense bg-color="white" v-model="adminUser" @keyup.enter="save" />
             </div>
           </div>
           <div class="row">
             <div class="col-2 q-my-sm" v-t="'MAILCHANGEPASSWORDHMAILSERVERPLUGIN.LABEL_ADMINPASS'"></div>
             <div class="col-5">
-              <q-input outlined dense bg-color="white" type="password" autocomplete="new-password"
-                       v-model="password" @keyup.enter="save"/>
+              <q-input
+                outlined
+                dense
+                bg-color="white"
+                type="password"
+                autocomplete="new-password"
+                v-model="password"
+                @keyup.enter="save"
+              />
             </div>
           </div>
         </q-card-section>
       </q-card>
       <div class="q-pt-md text-right">
-        <q-btn unelevated no-caps dense class="q-px-sm" :ripple="false" color="primary" @click="save"
-               :label="$t('COREWEBCLIENT.ACTION_SAVE')">
+        <q-btn
+          unelevated
+          no-caps
+          dense
+          class="q-px-sm"
+          :ripple="false"
+          color="primary"
+          @click="save"
+          :label="$t('COREWEBCLIENT.ACTION_SAVE')"
+        >
         </q-btn>
       </div>
     </div>
-    <q-inner-loading style="justify-content: flex-start;" :showing="saving">
+    <q-inner-loading style="justify-content: flex-start" :showing="saving">
       <q-linear-progress query />
     </q-inner-loading>
   </q-scroll-area>
@@ -59,23 +81,23 @@ const FAKE_PASS = '     '
 export default {
   name: 'HmailserverAdminSettings',
 
-  data () {
+  data() {
     return {
       adminUser: '',
       hasAdminPass: false,
       supportedServers: '',
       savedPass: FAKE_PASS,
       password: FAKE_PASS,
-      saving: false
+      saving: false,
     }
   },
 
-  mounted () {
+  mounted() {
     this.populate()
   },
 
   beforeRouteLeave(to, from, next) {
-    this.doBeforeRouteLeave(to, from, next)
+    this.$root.doBeforeRouteLeave(to, from, next)
   },
 
   methods: {
@@ -84,10 +106,12 @@ export default {
      */
     hasChanges() {
       const data = settings.getHmailServerPluginSettings()
-      return this.supportedServers !== data.supportedServers ||
-          this.adminUser !== data.adminUser ||
-          this.port !== data.port ||
-          this.password !== this.savedPass
+      return (
+        this.supportedServers !== data.supportedServers ||
+        this.adminUser !== data.adminUser ||
+        this.port !== data.port ||
+        this.password !== this.savedPass
+      )
     },
 
     /**
@@ -95,11 +119,11 @@ export default {
      * do not use async methods - just simple and plain reverting of values
      * !! hasChanges method must return true after executing revertChanges method
      */
-    revertChanges () {
+    revertChanges() {
       this.populate()
     },
 
-    save () {
+    save() {
       if (!this.saving) {
         this.saving = true
         const parameters = {
@@ -109,41 +133,46 @@ export default {
         if (this.password !== FAKE_PASS) {
           parameters.AdminPass = this.password
         }
-        webApi.sendRequest({
-          moduleName: 'MailChangePasswordHmailserverPlugin',
-          methodName: 'UpdateSettings',
-          parameters,
-        }).then(result => {
-          this.saving = false
-          if (result === true) {
-            settings.saveHmailServerPluginSettings({
-              supportedServers: this.supportedServers,
-              adminUser: this.adminUser,
-              hasAdminPass: this.password !== ''
-            })
-            this.savedPass = this.password
-            notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
-          } else {
-            notification.showError(this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED'))
-          }
-        }, response => {
-          this.saving = false
-          notification.showError(errors.getTextFromResponse(response, this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED')))
-        })
+        webApi
+          .sendRequest({
+            moduleName: 'MailChangePasswordHmailserverPlugin',
+            methodName: 'UpdateSettings',
+            parameters,
+          })
+          .then(
+            (result) => {
+              this.saving = false
+              if (result === true) {
+                settings.saveHmailServerPluginSettings({
+                  supportedServers: this.supportedServers,
+                  adminUser: this.adminUser,
+                  hasAdminPass: this.password !== '',
+                })
+                this.savedPass = this.password
+                notification.showReport(this.$t('COREWEBCLIENT.REPORT_SETTINGS_UPDATE_SUCCESS'))
+              } else {
+                notification.showError(this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED'))
+              }
+            },
+            (response) => {
+              this.saving = false
+              notification.showError(
+                errors.getTextFromResponse(response, this.$t('COREWEBCLIENT.ERROR_SAVING_SETTINGS_FAILED'))
+              )
+            }
+          )
       }
     },
-    populate () {
+    populate() {
       const data = settings.getHmailServerPluginSettings()
       this.adminUser = data.adminUser
       this.hasAdminPass = data.hasAdminPass
       this.supportedServers = data.supportedServers
       this.savedPass = data.hasAdminPass ? FAKE_PASS : ''
       this.password = data.hasAdminPass ? FAKE_PASS : ''
-    }
-  }
+    },
+  },
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
