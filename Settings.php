@@ -45,7 +45,7 @@ class Settings extends \Aurora\System\Module\Settings
                 "",
                 "string",
                 null,
-                "Defines hMailServer administrator password",
+                "Defines hMailServer administrator password. Will be automatically encrypted.",
             ),
         ];
     }

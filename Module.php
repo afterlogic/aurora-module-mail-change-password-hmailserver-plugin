@@ -72,6 +72,7 @@ class Module extends \Aurora\System\Module\AbstractModule
     {
         /** @var HMailServer $oBaseApp */
         static $oBaseApp = null;
+        $this->checkAndEncryptPassword();
 
         if (null === $oBaseApp) {
             if (class_exists('COM')) {
@@ -81,7 +82,7 @@ class Module extends \Aurora\System\Module\AbstractModule
                     $oBaseApp->Connect();
                     $this->oAdminAccount = $oBaseApp->Authenticate(
                         $this->oModuleSettings->AdminUser,
-                        $this->oModuleSettings->AdminPass
+                        \Aurora\System\Utils::DecryptValue($this->oModuleSettings->AdminPass)
                     );
                 } catch(\Exception $oException) {
                     \Aurora\System\Api::Log('Initialize Server Error');
@@ -155,7 +156,6 @@ class Module extends \Aurora\System\Module\AbstractModule
         return $bFound;
     }
 
-
     protected function getServerDomain($oAccount)
     {
         $oDomain = null;
@@ -212,32 +212,53 @@ class Module extends \Aurora\System\Module\AbstractModule
     }
 
     /**
+     * Checks if the password is encrypted and does this if it's not.
+     * @return boolean
+     */
+    protected function checkAndEncryptPassword()
+    {
+        $performedEncryption = false;
+
+        if ($this->oModuleSettings->AdminPass && !\Aurora\System\Utils::IsEncryptedValue($this->oModuleSettings->AdminPass)) {
+            $bPrevState = \Aurora\System\Api::skipCheckUserRole(true);
+            $this->Decorator()->UpdateSettings(
+                implode("\n", $this->oModuleSettings->SupportedServers),
+                $this->oModuleSettings->AdminUser,
+                $this->oModuleSettings->AdminPass
+            );
+            $bPrevState = \Aurora\System\Api::skipCheckUserRole($bPrevState);
+            $performedEncryption = true;
+        }
+
+        return $performedEncryption;
+    }
+
+    /**
      * Obtains list of module settings for super admin.
      * @return array
      */
     public function GetSettings()
     {
         \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::SuperAdmin);
+        $this->checkAndEncryptPassword();
 
         $sSupportedServers = implode("\n", $this->oModuleSettings->SupportedServers);
 
-        $aAppData = array(
+        return array(
             'SupportedServers' => $sSupportedServers,
             'AdminUser' => $this->oModuleSettings->AdminUser,
             'HasAdminPass' => $this->oModuleSettings->AdminPass !== '',
         );
-
-        return $aAppData;
     }
 
     /**
      * Updates module's super admin settings.
      * @param string $SupportedServers
      * @param string $AdminUser
-     * @param int $AdminPass
+     * @param string $AdminPass
      * @return boolean
      */
-    public function UpdateSettings($SupportedServers, $AdminUser, $AdminPass)
+    public function UpdateSettings($SupportedServers, $AdminUser, $AdminPass = null)
     {
         \Aurora\System\Api::checkUserRoleIsAtLeast(\Aurora\System\Enums\UserRole::SuperAdmin);
 
@@ -245,36 +266,45 @@ class Module extends \Aurora\System\Module\AbstractModule
 
         $this->setConfig('SupportedServers', $aSupportedServers);
         $this->setConfig('AdminUser', $AdminUser);
-        $this->setConfig('AdminPass', $AdminPass);
+
+        if ($AdminPass !== null) {
+            $this->setConfig('AdminPass', \Aurora\System\Utils::EncryptValue($AdminPass));
+        }
+
         return $this->saveModuleConfig();
     }
 }
 
-class HMailServer {
+class HMailServer
+{
     /** @var HMailServerDomains */
     public $Domains;
-    
-    public function Connect() {
+
+    public function Connect()
+    {
     }
 
     /**
      * @param string $user
      * @param string $pass
-     * 
+     *
      * @return mixed
      */
-    public function Authenticate($user, $pass) {
+    public function Authenticate($user, $pass)
+    {
         return null;
     }
 }
 
-class HMailServerDomains {
+class HMailServerDomains
+{
     /**
      * @param string $name
-     * 
+     *
      * @return mixed
      */
-    public function ItemByName($name) {
+    public function ItemByName($name)
+    {
         return null;
     }
 }
