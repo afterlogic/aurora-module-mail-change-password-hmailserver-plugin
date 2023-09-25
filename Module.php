@@ -280,9 +280,7 @@ class HMailServer
     /** @var HMailServerDomains */
     public $Domains;
 
-    public function Connect()
-    {
-    }
+    public function Connect() {}
 
     /**
      * @param string $user
