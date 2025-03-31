@@ -8,6 +8,7 @@
 namespace Aurora\Modules\MailChangePasswordHmailserverPlugin;
 
 use Aurora\Modules\Mail\Models\MailAccount;
+use Aurora\System\Notifications;
 
 /**
  * Allows users to change passwords on their email accounts hosted by [hMailServer](https://www.hmailserver.com/).
@@ -204,10 +205,10 @@ class Module extends \Aurora\System\Module\AbstractModule
                         }
                     }
                 } catch (\Exception $oException) {
-                    throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Exceptions\Errs::UserManager_AccountNewPasswordUpdateError);
+                    throw new \Aurora\System\Exceptions\ApiException(Notifications::CanNotChangePassword);
                 }
             } else {
-                throw new \Aurora\System\Exceptions\ApiException(\Aurora\System\Exceptions\Errs::UserManager_AccountNewPasswordUpdateError);
+                throw new \Aurora\System\Exceptions\ApiException(Notifications::CanNotChangePassword);
             }
         }
         return $mResult;
