@@ -6,9 +6,9 @@ How to install a module (taking WebMail Lite as an example of the product built 
 
 The product and hMailServer must run on the same server. PHP COM extension is required.
 
-In admin interface, under "Hmailserver password change" tab, you need to supply list of mailserver hostnames or IP addresses the feature is enabled for, one host per line. If you put "*" character there, it means the feature is enabled for all accounts.
+In `data/settings/modules/MailChangePasswordHmailserverPlugin.config.json` file, you need to supply array of mailserver hostnames or IP addresses the feature is enabled for. If you put "*" item there, it means the feature is enabled for all accounts.
 
-On the same tab, you need to provide login and password for administrative account of hMailServer.
+In the same file, you need to provide username and password of hMailServer administrator, `AdminUser` and `AdminPass` values respectively.
 
 To activate "Change password" button in the interface, set "Disabled" to **false** in `data/settings/modules/ChangePasswordWebclient.config.json` configuration file. 
 
