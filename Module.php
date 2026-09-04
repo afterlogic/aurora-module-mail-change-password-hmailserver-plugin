@@ -224,12 +224,15 @@ class Module extends \Aurora\System\Module\AbstractModule
 
         if ($this->oModuleSettings->AdminPass && !\Aurora\System\Utils::IsEncryptedValue($this->oModuleSettings->AdminPass)) {
             $bPrevState = \Aurora\System\Api::skipCheckUserRole(true);
-            $this->Decorator()->UpdateSettings(
-                implode("\n", $this->oModuleSettings->SupportedServers),
-                $this->oModuleSettings->AdminUser,
-                $this->oModuleSettings->AdminPass
-            );
-            $bPrevState = \Aurora\System\Api::skipCheckUserRole($bPrevState);
+            try {
+                $this->Decorator()->UpdateSettings(
+                    implode("\n", $this->oModuleSettings->SupportedServers),
+                    $this->oModuleSettings->AdminUser,
+                    $this->oModuleSettings->AdminPass
+                );
+            } finally {
+                \Aurora\System\Api::skipCheckUserRole($bPrevState);
+            }
             $performedEncryption = true;
         }
 
